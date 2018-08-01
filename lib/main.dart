@@ -1,62 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:async';
 
-void main() => runApp(new MyApp());
+const URL = "https://git-scm.com/book/en/v2";
+
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Gitbook Unofficial',
+      theme: ThemeData.dark(),
+      home: Home(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+class Home extends StatefulWidget {
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  HomeState createState() =>  HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+class HomeState extends State<Home> {
+  Future launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url, forceSafariVC: true, forceWebView: true);
+    } else {
+      print("Can't launch $url");
+    }
   }
-
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Webview"),
       ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              'You have pushed the button this many times:',
-            ),
-            new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
+      body: Center(
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Text(URL),
+              ),
+              RaisedButton(
+                child: Text("OPEN"),
+                onPressed: (){
+                  launchUrl(URL);
+                },
+              )
+            ],
+          ),
       ),
     );
   }
